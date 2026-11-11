@@ -2,5 +2,12 @@
   "manifest_version": 3,
   "name": "Subscription Dark Pattern Detector",
   "version": "0.1.0",
-  "description": "구독 서비스 페이지의 다크패턴 의심 요소를 탐지합니다."
+  "description": "구독 서비스 페이지의 다크패턴 의심 요소를 탐지합니다.",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["src/checkbox-detector.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }
