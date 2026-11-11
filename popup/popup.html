@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>다크패턴 탐지</title>
+    <link rel="stylesheet" href="popup.css">
+    <script src="popup.js" defer></script>
+  </head>
+  <body>
+    <main class="popup">
+      <header class="popup-header">
+        <h1>다크패턴 탐지</h1>
+        <p>구독 페이지의 사전 선택 항목과 할인 타이머를 확인합니다.</p>
+      </header>
+
+      <button id="analyze-button" class="analyze-button" type="button">
+        현재 페이지 분석
+      </button>
+
+      <!-- popup.js에서 대기·분석 중·완료·분석 제외·오류 상태를 표시합니다. -->
+      <p id="status-message" class="status-message" role="status">
+        분석할 페이지를 연 뒤 버튼을 눌러 주세요.
+      </p>
+
+      <!-- 분석을 완료한 뒤 popup.js에서 hidden 속성을 해제합니다. -->
+      <section id="results-section" class="results" aria-labelledby="results-title" hidden>
+        <h2 id="results-title">분석 결과</h2>
+
+        <dl class="result-summary">
+          <div class="summary-item summary-item--preselected">
+            <dt>사전 선택 의심</dt>
+            <dd><span id="preselected-count">0</span>건</dd>
+          </div>
+          <div class="summary-item summary-item--timer">
+            <dt>허위 타이머 의심</dt>
+            <dd><span id="timer-count">0</span>건</dd>
+          </div>
+        </dl>
+
+        <p id="empty-message" class="empty-message" hidden>
+          이번 분석에서 의심 요소가 발견되지 않았습니다.
+        </p>
+
+        <ul id="findings-list" class="findings-list" aria-label="탐지 항목과 판단 근거"></ul>
+      </section>
+    </main>
+
+    <!-- 탐지 결과 하나당 이 양식을 복제해 findings-list에 추가합니다. -->
+    <template id="finding-template">
+      <li class="finding">
+        <article>
+          <p class="finding-type"></p>
+          <h3 class="finding-message"></h3>
+          <p class="evidence-label">판단 근거</p>
+          <ul class="finding-evidence"></ul>
+        </article>
+      </li>
+    </template>
+  </body>
+</html>

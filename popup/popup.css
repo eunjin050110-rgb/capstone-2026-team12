@@ -1,0 +1,197 @@
+/* 흰색 바탕, 무채색 글자와 얇은 구분선만 사용하는 팝업 스타일입니다. */
+:root {
+  color-scheme: light;
+  --popup-width: 380px;
+  --background: #ffffff;
+  --surface: #f5f5f5;
+  --text: #222222;
+  --text-muted: #666666;
+  --border: #e5e5e5;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* 결과 영역은 분석이 완료될 때까지 숨깁니다. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  width: var(--popup-width);
+  max-width: 100vw;
+  margin: 0;
+  background: var(--background);
+  color: var(--text);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* 결과가 많아져도 팝업 안에서 스크롤할 수 있습니다. */
+.popup {
+  max-height: 580px;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.popup-header h1 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+  line-height: 1.4;
+}
+
+.popup-header p {
+  margin: 6px 0 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  word-break: keep-all;
+}
+
+.analyze-button {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid var(--text);
+  border-radius: 0;
+  background: var(--background);
+  color: var(--text);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.analyze-button:hover:not(:disabled) {
+  background: var(--surface);
+}
+
+.analyze-button:focus-visible {
+  outline: 2px solid #737373;
+  outline-offset: 3px;
+}
+
+.analyze-button:disabled {
+  border-color: var(--border);
+  color: #888888;
+  cursor: not-allowed;
+}
+
+.status-message {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* popup.js에서 status-message의 data-state를 설정합니다. */
+.status-message[data-state="loading"] {
+  color: var(--text);
+}
+
+.status-message[data-state="error"] {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.results {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.results h2 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.result-summary {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  min-width: 0;
+}
+
+.summary-item dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.summary-item dd {
+  flex-shrink: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+.summary-item dd span {
+  margin-right: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+}
+
+.empty-message {
+  margin: 0;
+  padding: 10px 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.findings-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.finding {
+  min-width: 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+
+/* 탐지 유형은 색상이나 배지 대신 텍스트로 구분합니다. */
+.finding-type {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.finding-message {
+  margin: 4px 0 10px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.evidence-label {
+  margin: 0 0 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.finding-evidence {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.finding-evidence li + li {
+  margin-top: 3px;
+}
