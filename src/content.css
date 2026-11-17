@@ -1,0 +1,36 @@
+/*
+ * 페이지 위 하이라이트의 무채색 테마입니다.
+ * highlighter.js의 Shadow DOM 내부로 전달할 CSS 변수를 정의합니다.
+ * 웹사이트의 button, input, body 스타일은 변경하지 않습니다.
+ *
+ * 로드 방법:
+ * - 동봉 popup.js가 분석 기능 주입 시 이 파일도 함께 주입합니다.
+ * - manifest에서 미리 로드한다면 content_scripts 항목에
+ *   "css": ["src/content.css"]를 추가하세요.
+ *
+ * 사전 선택·목표 위치는 실선, 타이머는 점선입니다.
+ * 유형 구분과 위치 계산은 highlighter.js가 담당합니다.
+ */
+
+[data-dp-highlighter-root="true"] {
+  /* 표시 영역 테두리: 검정 선 + 흰색 외곽선 */
+  --dp-outline-color: #222;
+  --dp-outline-width: 1px;
+  --dp-outline-halo-color: #fff;
+  --dp-outline-halo-width: 1px;
+
+  /* 작은 유형 라벨: 흰색 바탕, 회색 테두리, 검정 글자 */
+  --dp-label-background: #fff;
+  --dp-label-color: #222;
+  --dp-label-border-color: #555;
+  --dp-label-border-width: 1px;
+  --dp-label-padding-block: 3px;
+  --dp-label-padding-inline: 6px;
+  --dp-label-radius: 0;
+
+  --dp-label-font-family: system-ui, -apple-system, "Segoe UI",
+    "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --dp-label-font-size: 12px;
+  --dp-label-font-weight: 500;
+  --dp-label-line-height: 1.4;
+}
