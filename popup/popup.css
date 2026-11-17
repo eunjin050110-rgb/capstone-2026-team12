@@ -88,6 +88,7 @@ body {
   margin: 12px 0 0;
   color: var(--text-muted);
   font-size: 12px;
+  white-space: pre-line;
 }
 
 /* popup.js에서 status-message의 data-state를 설정합니다. */

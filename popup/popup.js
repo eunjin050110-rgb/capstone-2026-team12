@@ -9,7 +9,7 @@
  *   ok: true,
  *   isSubscriptionPage: true,
  *   results: [{
- *     type: "PRESELECTED_OPTION", // 또는 "RESET_TIMER"
+ *     type: "PRESELECTED_OPTION", // 또는 "RESET_TIMER", "STATIC_TIMER"
  *     level: "HIGH",
  *     message: "유료 부가서비스가 선택되어 있습니다.",
  *     evidence: ["최초 관찰 시 선택되어 있음", "보험", "월 4,900원"],
@@ -36,12 +36,15 @@
     "src/rules.js",
     "src/checkbox-detector.js",
     "src/timer-detector.js",
+    "src/goal-navigator.js",
+    "src/interference-detector.js",
     "src/highlighter.js",
     "src/content.js",
   ];
   const TYPE_LABELS = new Map([
     ["PRESELECTED_OPTION", "사전 선택 의심"],
     ["RESET_TIMER", "허위 타이머 의심"],
+    ["STATIC_TIMER", "정지 타이머 확인 필요"],
   ]);
   const ui = {
     button: document.getElementById("analyze-button"),
@@ -54,6 +57,7 @@
     template: document.getElementById("finding-template"),
   };
   let isAnalyzing = false;
+  const defaultEmptyText = ui.emptyMessage.textContent;
 
   class DisplayError extends Error {}
 
@@ -71,6 +75,7 @@
   function clearResults() {
     ui.results.hidden = true;
     ui.emptyMessage.hidden = true;
+    ui.emptyMessage.textContent = defaultEmptyText;
     ui.list.replaceChildren();
     ui.preselectedCount.textContent = "0";
     ui.timerCount.textContent = "0";
@@ -123,6 +128,7 @@
     }
 
     const target = { tabId: tab.id, frameIds: [0] };
+    // CSS 변수를 먼저 주입하고, highlighter.js의 Shadow DOM에서 사용합니다.
     await api.scripting.insertCSS({ target, files: ["src/content.css"] });
     await api.scripting.executeScript({ target, files: SCRIPT_FILES });
     return sendAnalysisRequest(tab.id);
@@ -166,7 +172,7 @@
 
     for (const result of results) {
       if (result.type === "PRESELECTED_OPTION") preselectedCount += 1;
-      if (result.type === "RESET_TIMER") timerCount += 1;
+      if (["RESET_TIMER", "STATIC_TIMER"].includes(result.type)) timerCount += 1;
 
       const item = ui.template.content.cloneNode(true);
       item.querySelector(".finding").dataset.type = result.type;
@@ -228,9 +234,15 @@
       }
 
       renderResults(response.results);
-      setStatus(response.results.length > 0
+      const warnings = Array.isArray(response.warnings) ? response.warnings.filter(value => typeof value === "string") : [];
+      const notes = Array.isArray(response.notes) ? response.notes.filter(value => typeof value === "string") : [];
+      if (warnings.length && response.results.length === 0) {
+        ui.emptyMessage.textContent = "일부 항목을 확인하지 못했습니다. 위 안내를 확인해 주세요.";
+      }
+      const summary = response.results.length > 0
         ? `분석 완료 · 의심 항목 ${response.results.length}건`
-        : "분석을 완료했습니다.", "success");
+        : "분석을 완료했습니다.";
+      setStatus([summary, ...warnings, ...notes].join("\n"), warnings.length ? "warning" : "success");
     } catch (error) {
       clearResults();
       setStatus(getErrorMessage(error), "error");
