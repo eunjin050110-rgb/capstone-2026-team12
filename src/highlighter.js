@@ -32,6 +32,8 @@
   const TYPE_LABELS = new Map([
     ["PRESELECTED_OPTION", "사전 선택 의심"],
     ["RESET_TIMER", "허위 타이머 의심"],
+    ["STATIC_TIMER", "정지 타이머 확인 필요"],
+    ["GOAL_TARGET", "목표 위치"],
   ]);
   const PADDING = 3;
   const EDGE = 4;
@@ -120,7 +122,7 @@
 
     const outline = document.createElement("div");
     outline.className = "outline";
-    outline.style.borderStyle = types.has("PRESELECTED_OPTION") ? "solid" : "dashed";
+    outline.style.borderStyle = types.has("PRESELECTED_OPTION") || types.has("GOAL_TARGET") ? "solid" : "dashed";
 
     const label = document.createElement("span");
     label.className = "label";

@@ -5,9 +5,9 @@
         GET_STATE: 'GOAL_STATE',
         POPUP_SHOWN: 'POPUP_SHOWN',
         POPUP_REJECTED: 'POPUP_REJECTED',
-        NAV_RECORDl: 'NAV_RECORD',
+        NAV_RECORD: 'NAV_RECORD',
         FIND_GOAL_CANDIDATES: 'FIND_GOAL_CANDIDATES',
-        ACTIVATE_CANDIDATES: 'ACTIVATE_CANDIDATE'
+        ACTIVATE_CANDIDATE: 'ACTIVATE_CANDIDATE'
     };
 
     const STATUS ={IDLE: 'idle', TRACKING: 'tracking', STOPPED: 'stopped', OFFSITE: 'paused-offsite'};
@@ -17,7 +17,7 @@
         label: '가입',
         words: ['회원가입', '가입하기', '가입', '계정 만들기', 'signup', 'register', 'create account'],
         negative: ['탈퇴', '가입 해지', '이미 가입'],
-        urlHints: ['signup', 'sing-up', 'register', 'join', '가입']
+        urlHints: ['signup', 'sign-up', 'register', 'join', '가입']
       },
       subscribe: {
         label: '구독',
@@ -51,7 +51,7 @@
     const GOAL_NAV = { maxCandidates: 5, wordScore: 3, urlScore: 2, minScore: 2};
 
     function normalizeText(text) {
-        return String(text || '').normalize('NFKC').toLowerCase().replace(/[^\p{L}\s]/gs, ' ').replace(/\s+/g, ' ').trim();
+        return String(text || '').normalize('NFKC').toLowerCase().replace(/[^\p{L}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
     }
 
     function hasAny(text, words) {
@@ -65,7 +65,7 @@
       if (x === y) return x ? 1 : 0;
       if (x.length < 2 || y.length < 2) return 0;
       const pairs = (S) => Array.from(S.slice(1), (_, i) => S.slice(i, i + 2));
-      const px = pairs(X), py = pairs(y);
+      const px = pairs(x), py = pairs(y);
       let same = 0;
       for (const p of px) {
         const i = py.indexOf(p);
@@ -81,7 +81,7 @@
 
     function matchRejectAction(buttonText) {
       const raw = String(buttonText || '').trim();
-      if (['x', 'X', 'x', 'X'].includes(raw)) return 'close';
+      if (['x', 'X'].includes(raw)) return 'close';
       for (const action in REJECT_WORDS) {
         if (hasAny(raw, REJECT_WORDS[action])) return action;
       }
@@ -90,23 +90,56 @@
 
     function judgeRepeat(popups, text, purpose) {
       const now = normalizeText(text);
-      const isSame = (p) => similarity(p.text, now) >= REPEAT.sameThreshold;
+      const isSame = (popup) =>
+        similarity(popup.text, now) >= REPEAT.sameThreshold;
 
-      if (popups.some((p) => !p.rejected && isSame(p))) return { result: 'duplicate'};
+      const duplicate = popups.find(
+        (popup) => !popup.rejected && isSame(popup)
+      );
 
-      const rejected = popups.filter((p) => p.rejected);
-      const smaeText = rejected.find(isSame);
-      if (sameText) {
-        return {result: 'repeat', kind: 'same-popup', previous: smaeText.text.slice(0, 40),
-          reason: '거절한 팝업과 같은 문구가 다시 나타남'};
+      if (duplicate) {
+        return {
+          result: 'duplicate',
+          popupKey: duplicate.key
+        };
       }
-      const samePurpose = purpose === PURPOSE.OFFER && rejected.find((p) => p.purpose === PURPOSE.OFFER);
+
+      const rejected = popups.filter(
+        (popup) => popup.rejected
+      );
+
+      const sameText = rejected.find(isSame);
+
+      if (sameText) {
+        return {
+          result: 'repeat',
+          kind: 'same-popup',
+          previous: sameText.text.slice(0, 40),
+          reason: '거절한 팝업과 같은 문구가 다시 나타남'
+        };
+      }
+
+      const samePurpose =
+        purpose === PURPOSE.OFFER
+          ? rejected.find(
+              (popup) => popup.purpose === PURPOSE.OFFER
+            )
+          : null;
+
       if (samePurpose) {
-        return {result: 'repeat', kind: 'same-popup', previous: smaeText.text.slice(0, 40),
-          reason: '거절 뒤 문구는 다르지만 같은 목적의 팝업이 나타남' };
+        return {
+          result: 'repeat',
+          kind: 'same-purpose',
+          previous: samePurpose.text.slice(0, 40),
+          reason:
+            '거절 뒤 문구는 다르지만 같은 목적의 팝업이 나타남'
+        };
+      }
+
+      return {
+        result: 'first'
+      };
     }
-    return { result: 'first'};
-}
 
 root.TeamRules = {
     MESSAGE, STATUS, GOALS, PURPOSE, FINAL_WORDS, REPEAT, GOAL_NAV, normalizeText, hasAny, similarity, classifyPurpose, matchRejectAction, judgeRepeat

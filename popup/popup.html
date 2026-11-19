@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="ko">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>다크패턴 탐지</title>
-    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="popup.css" />
     <script src="popup.js" defer></script>
   </head>
   <body>
@@ -24,7 +24,12 @@
       </p>
 
       <!-- 분석을 완료한 뒤 popup.js에서 hidden 속성을 해제합니다. -->
-      <section id="results-section" class="results" aria-labelledby="results-title" hidden>
+      <section
+        id="results-section"
+        class="results"
+        aria-labelledby="results-title"
+        hidden
+      >
         <h2 id="results-title">분석 결과</h2>
 
         <dl class="result-summary">
@@ -42,7 +47,71 @@
           이번 분석에서 의심 요소가 발견되지 않았습니다.
         </p>
 
-        <ul id="findings-list" class="findings-list" aria-label="탐지 항목과 판단 근거"></ul>
+        <ul
+          id="findings-list"
+          class="findings-list"
+          aria-label="탐지 항목과 판단 근거"
+        ></ul>
+      </section>
+
+      <!-- 가입, 구독, 해지 과정의 반복 간섭을 추적합니다. -->
+      <section
+        id="goal-tracking-section"
+        class="goal-tracking"
+        aria-labelledby="goal-tracking-title"
+      >
+        <h2 id="goal-tracking-title">목표 추적</h2>
+        <label for="goal-select">사용자 목표</label>
+        <select id="goal-select">
+          <option value="signup">가입</option>
+          <option value="subscribe">구독</option>
+          <option value="cancel">해지</option>
+        </select>
+
+        <div class="goal-actions">
+          <button id="goal-start-button" type="button">추적 시작</button>
+          <button id="goal-stop-button" type="button" disabled>
+            추적 중단
+          </button>
+        </div>
+
+        <p id="goal-status-message" class="goal-status-message" role="status">
+          현재 추적 중인 목표가 없습니다.
+        </p>
+
+        <dl id="tracking-summary" class="tracking-summary" hidden>
+          <div>
+            <dt>현재 목표</dt>
+            <dd id="tracking-goal">-</dd>
+          </div>
+          <div>
+            <dt>방문 페이지</dt>
+            <dd><span id="visited-page-count">0</span>개</dd>
+          </div>
+          <div>
+            <dt>반복 간섭</dt>
+            <dd><span id="interference-count">0</span>건</dd>
+          </div>
+        </dl>
+
+        <p id="tracking-notice" class="tracking-notice" hidden></p>
+        <button id="find-goal-button" type="button" disabled>
+          목표 이동 버튼 찾기
+        </button>
+
+        <section id="goal-candidates-section" class="goal-candidates" hidden>
+          <h3>이동 가능한 항목</h3>
+          <p id="goal-candidates-empty" hidden>
+            현재 페이지에서 목표에 맞는 항목을 찾지 못했습니다.
+          </p>
+          <ul id="goal-candidates-list"></ul>
+        </section>
+
+        <section id="interference-section" class="interference-results" hidden>
+          <h3>반복 간섭 탐지 내역</h3>
+          <p id="interference-empty">현재까지 탐지된 반복 간섭이 없습니다.</p>
+          <ol id="interference-list"></ol>
+        </section>
       </section>
     </main>
 
@@ -55,6 +124,24 @@
           <p class="evidence-label">판단 근거</p>
           <ul class="finding-evidence"></ul>
         </article>
+      </li>
+    </template>
+
+    <!-- 목표 이동 후보 하나를 표시할 때 사용합니다. -->
+    <template id="goal-candidate-template">
+      <li class="goal-candidate">
+        <button class="goal-candidate-button" type="button">
+          <span class="goal-candidate-label"></span>
+          <span class="goal-candidate-action"></span>
+        </button>
+      </li>
+    </template>
+
+    <!-- 반복 간섭 탐지 기록 하나를 표시할 때 사용합니다. -->
+    <template id="interference-template">
+      <li class="interference-item">
+        <p class="interference-reason"></p>
+        <p class="interference-text"></p>
       </li>
     </template>
   </body>

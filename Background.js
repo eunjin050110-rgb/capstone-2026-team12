@@ -4,9 +4,40 @@ const R = self.TeamRules, M = R.MESSAGE;
 const host = (url) => new URL(url).hostname.replace(/^www\./, '');            // 사이트 이름
 const load = async (id) => (await chrome.storage.session.get('tab' + id))['tab' + id];
 const save = (id, s) => chrome.storage.session.set({ ['tab' + id]: s });
- 
+
+const timerKey= (key) => `timer:${key}`;
+const loadTimer = async (key) => {
+  const storageKey = timerKey(key);
+  const result = await chrome.storage.session.get(storageKey);
+
+  return result[storageKey] || null;
+};
+
+const saveTimer = async (key, state) => {
+  const storageKey = timerKey(key);
+
+  await chrome.storage.session.set({
+    [storageKey]: state
+  });
+};
+
 async function handle(msg, sender) {
   const id = sender.tab ? sender.tab.id : msg.tabId;   
+
+  if (msg.type === "TIMER_GET") {
+    return {
+      state: await loadTimer(msg.key)
+    };
+  }
+
+  if (msg.type === "TIMER_SAVE") {
+    await saveTimer(msg.key, msg.state);
+
+    return {
+      ok: true
+    };
+  }
+
   let s = await load(id);
  
   if (msg.type === M.GET_STATE) return { state: s || { status: R.STATUS.IDLE } };

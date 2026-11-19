@@ -8,7 +8,7 @@
 
   if (!R) {
     console.warn(
-      "[interference-detector] Rules.js가 먼저 로드되어야 합니다."
+      "[interference-detector] rules.js가 먼저 로드되어야 합니다."
     );
     return;
   }
@@ -29,18 +29,18 @@
   const INTERACTIVE_SELECTOR = [
     "button",
     "a",
-    '[rola="button"]',
-    '[input[type="button"]',
+    '[role="button"]',
+    'input[type="button"]',
     'input[type="submit"]'
   ].join(", ");
 
-  const popupKeys = new weakMap();
+  const popupKeys = new WeakMap();
   const visiblePopups = new Set();
-  const processingPopups = new Set();
+  const processingPopups = new WeakSet();
 
   let observer = null;
   let scanTimer = null;
-  let popupSeqence = 0;
+  let popupSequence = 0;
   let started = false;
 
   function normalizeText(text) {
@@ -62,14 +62,14 @@
     }
 
     const style = window.getComputedStyle(element);
-    const rect = element.getVounfingClientRect();
+    const rect = element.getBoundingClientRect();
 
     return (
       style.display !== "none" &&
-      style.visivility !== "hidden" &&
+      style.visibility !== "hidden" &&
       Number(style.opacity) !== 0 &&
       !element.hidden &&
-      element.getAttribute("ariaa-hidden") !== "true" &&
+      element.getAttribute("aria-hidden") !== "true" &&
       rect.width > 0 &&
       rect.height > 0
     );
@@ -96,7 +96,7 @@
       elementArea / viewportArea >= 0.08;
 
     const hasControl = Boolean(
-      element.querySelector(INTERACTIVE_SELETOR)
+      element.querySelector(INTERACTIVE_SELECTOR)
     );
 
     return coversEnoughScreen && hasControl;
@@ -138,7 +138,7 @@
     root
       .querySelectorAll(POPUP_SELECTORS)
       .forEach((element) => {
-        if (!isPopupCandidate(element)) {
+        if (isPopupCandidate(element)) {
           candidates.add(element);
         }
       });
@@ -149,7 +149,7 @@
         if (isFixedOverlay(element)) {
           candidates.add(element);
         }
-      })
+      });
 
     return [...candidates];
   }
@@ -181,12 +181,12 @@
   }
 
   function createPopupKey() {
-    popupSeqence ++;
+    popupSequence ++;
 
     return [
       "popup",
       Date.now(),
-      popupSeqence
+      popupSequence
     ].join("-");
   }
 
@@ -205,7 +205,7 @@
       );
     }
 
-    return false;
+    return result;
   }
 
   function calculateSimilarity(firstText, secondText) {
@@ -225,7 +225,7 @@
 
     if (
       firstPairs.length === 0 ||
-      secondPairs.lenth === 0
+      secondPairs.length === 0
     ) {
       return 0;
     }
@@ -261,7 +261,7 @@
     if (sameUnrejectedPopup) {
       return {
         result: "duplicate",
-        popupKeys: sameUnrejectedPopup.key
+        popupKey: sameUnrejectedPopup.key
       };
     }
 
@@ -278,7 +278,7 @@
       return {
         result: "repeat",
         repeat: {
-          kind: "smae-popup",
+          kind: "same-popup",
           previous: sameRejectedPopup.text.slice(0, 40),
           reason:
             "사용자가 거절한 팝업과 유사한 팝업이 다시 나타남"
@@ -303,7 +303,7 @@
           kind: "same-purpose",
           previous: samePurposePopup.text.slice(0, 40),
           reason:
-            "사용자가 거절한 뒤 문구는 다르지만 같은 목적의 권규가 다시 나타남"
+            "사용자가 거절한 뒤 문구는 다르지만 같은 목적의 권유가 다시 나타남"
         }
       };
     }
@@ -319,7 +319,7 @@
       return await chrome.runtime.sendMessage(message);
     } catch (error) {
       console.warn(
-        "[interference-detector 메시지 전송 실패:",
+        "[interference-detector] 메시지 전송 실패:",
         error
       );
 
@@ -384,10 +384,10 @@
       );
 
       if (judgment.result === "duplicate") {
-        if (judgment.popupKeys) {
+        if (judgment.popupKey) {
           popupKeys.set(
             element,
-            judgment.popupKeys
+            judgment.popupKey
           );
         }
 
@@ -398,7 +398,7 @@
       popupKeys.set(element, popupKey);
 
       await sendMessage({
-        type: MESSAGE.POPUP_SHWON,
+        type: MESSAGE.POPUP_SHOWN,
         popupKey,
         text,
         purpose,
@@ -435,15 +435,11 @@
     return candidates.length;
   }
 
-  function scheduleScan (root = document) {
+  function scheduleScan() {
     window.clearTimeout(scanTimer);
 
     scanTimer = window.setTimeout(() => {
-      scan(root);
-
-      if (root !== document) {
-        scan(document);
-      }
+      scan(document);
     }, 100);
   }
 
@@ -524,11 +520,11 @@
   }
 
   function handleMutations (mutations) {
-    for (const mutation of murations) {
+    for (const mutation of mutations) {
       if (mutation.type === "childList") {
         for (const node of mutation.addedNodes) {
           if (node instanceof Element) {
-            scheduleScan(node);
+            scheduleScan();
           }
         }
       }
@@ -537,7 +533,7 @@
         mutation.type === "attributes" &&
         mutation.target instanceof Element
       ) {
-        scheduleScan(mutation.target);
+        scheduleScan();
       }
     }
   }
