@@ -3,10 +3,45 @@
   "name": "Subscription Dark Pattern Detector",
   "version": "0.1.0",
   "description": "구독 서비스 페이지의 다크패턴 의심 요소를 탐지합니다.",
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting",
+    "activeTab"
+  ],
+
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "background": {
+    "service_worker": "Background.js"
+  },
+
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["src/checkbox-detector.js"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/rules.js",
+        "src/checkbox-detector.js",
+        "src/timer-detector.js",
+        "src/highlighter.js",
+        "src/goal-navigator.js",
+        "src/interference-detector.js",
+        "src/content.js"
+      ],
+      "css": [
+        "src/content.css"
+      ],
       "run_at": "document_idle"
     }
   ]

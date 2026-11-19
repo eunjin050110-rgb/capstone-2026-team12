@@ -1,10 +1,11 @@
 (function (root) {
   const R = root.TeamRules;
   let saved = {};   
+  let nextId = 1;
   const isVisible = (el) => el.offsetWidth > 0 && getComputedStyle(el).visibility !== 'hidden';
   const isSamePage = (a) => a.hash.length > 1 && a.href.split('#')[0] === location.href.split('#')[0];
 
- 
+
   function getScore(goal, label, a) {
     if (R.hasAny(label, goal.negative)) return -1;
     let score = 0;
