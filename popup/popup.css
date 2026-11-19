@@ -22,7 +22,7 @@
 
 body {
   width: var(--popup-width);
-  max-width: 100vw;
+  min-width: var(--popup-width);
   margin: 0;
   background: var(--background);
   color: var(--text);
