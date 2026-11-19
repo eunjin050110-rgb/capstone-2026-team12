@@ -17,7 +17,8 @@
  *
  * 사전 선택은 실선, 타이머는 점선이며 라벨로 유형을 구분합니다.
  * 원래 요소를 감싸거나 스타일·선택 상태를 변경하지 않습니다.
- * 필요한 스타일은 이 파일 안에 있어 별도 CSS를 작성할 필요가 없습니다.
+ * 색상·글자·라벨 여백은 content.css의 CSS 변수로 지정합니다.
+ * Shadow DOM 내부의 배치 스타일과 CSS 미로드 시 기본값은 이 파일에 있습니다.
  *
  * 범위: 현재 프레임의 일반 DOM. iframe / Shadow DOM 내부에는 별도 연결이
  * 필요합니다. native dialog 등 최상위 레이어와 루트 transform / zoom을 쓰는
@@ -33,7 +34,7 @@
     ["PRESELECTED_OPTION", "사전 선택 의심"],
     ["RESET_TIMER", "허위 타이머 의심"],
     ["STATIC_TIMER", "정지 타이머 확인 필요"],
-    ["GOAL_TARGET", "목표 위치"],
+    ["GOAL_TARGET", "선택한 기능 위치"],
   ]);
   const PADDING = 3;
   const EDGE = 4;
@@ -47,20 +48,24 @@
     .mark { position: absolute; inset: 0; }
     .outline {
       position: absolute;
-      border: 1px solid #222;
-      outline: 1px solid #fff;
+      border: var(--dp-outline-width, 1px) solid var(--dp-outline-color, #222);
+      outline: var(--dp-outline-halo-width, 1px) solid var(--dp-outline-halo-color, #fff);
       background: transparent;
     }
     .label {
       position: absolute;
       max-width: calc(100% - 8px);
       margin: 0;
-      padding: 3px 6px;
-      border: 1px solid #555;
-      background: #fff;
-      color: #222;
-      font: 500 12px/1.4 system-ui, -apple-system, "Segoe UI",
-        "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      padding: var(--dp-label-padding-block, 3px) var(--dp-label-padding-inline, 6px);
+      border: var(--dp-label-border-width, 1px) solid var(--dp-label-border-color, #555);
+      border-radius: var(--dp-label-radius, 0);
+      background: var(--dp-label-background, #fff);
+      color: var(--dp-label-color, #222);
+      font-family: var(--dp-label-font-family, system-ui, -apple-system, "Segoe UI",
+        "Apple SD Gothic Neo", "Malgun Gothic", sans-serif);
+      font-size: var(--dp-label-font-size, 12px);
+      font-weight: var(--dp-label-font-weight, 500);
+      line-height: var(--dp-label-line-height, 1.4);
       letter-spacing: normal;
       text-align: left;
       white-space: nowrap;
@@ -122,7 +127,7 @@
 
     const outline = document.createElement("div");
     outline.className = "outline";
-    outline.style.borderStyle = types.has("PRESELECTED_OPTION") || types.has("GOAL_TARGET") ? "solid" : "dashed";
+    outline.style.borderStyle = (types.has("PRESELECTED_OPTION") || types.has("GOAL_TARGET")) ? "solid" : "dashed";
 
     const label = document.createElement("span");
     label.className = "label";
