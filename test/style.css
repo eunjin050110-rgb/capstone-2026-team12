@@ -1,0 +1,200 @@
+:root {
+  color-scheme: light;
+  font-family:
+    Pretendard,
+    "Noto Sans KR",
+    Arial,
+    sans-serif;
+
+  color: #202124;
+  background: #f4f6f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+a,
+input {
+  font: inherit;
+}
+
+button,
+.goal-buttons a {
+  border: 0;
+  border-radius: 8px;
+  padding: 11px 18px;
+  color: #ffffff;
+  background: #3157d5;
+  cursor: pointer;
+}
+
+button:hover,
+.goal-buttons a:hover {
+  background: #2444b0;
+}
+
+.page-header {
+  padding: 40px 20px;
+  color: #ffffff;
+  text-align: center;
+  background: #25345e;
+}
+
+.page-header h1 {
+  margin: 0 0 12px;
+}
+
+.page-header p {
+  margin: 0;
+}
+
+.container {
+  width: min(920px, calc(100% - 32px));
+  margin: 32px auto 80px;
+}
+
+.test-card {
+  margin-bottom: 24px;
+  padding: 28px;
+  border: 1px solid #dfe3e8;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 6%);
+}
+
+.test-card h2 {
+  margin-top: 0;
+}
+
+.price {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3157d5;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  margin: 14px 0;
+  cursor: pointer;
+}
+
+.checkbox-row input {
+  width: 20px;
+  height: 20px;
+}
+
+.timer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.timer-box {
+  padding: 20px;
+  border: 2px solid #dfe3e8;
+  border-radius: 12px;
+}
+
+.timer-box h3 {
+  margin-top: 0;
+}
+
+.timer-box strong {
+  display: block;
+  margin: 12px 0;
+  font-size: 28px;
+}
+
+.timer-box small {
+  color: #606770;
+}
+
+.timer-box--normal {
+  border-color: #3aa76d;
+}
+
+.timer-box--static {
+  border-color: #e15554;
+}
+
+.timer-box--reset {
+  border-color: #e49b32;
+}
+
+.guide {
+  margin-bottom: 0;
+  color: #606770;
+}
+
+.goal-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.goal-buttons a {
+  text-decoration: none;
+}
+
+.danger-button {
+  background: #c83d3d;
+}
+
+.danger-button:hover {
+  background: #a92e2e;
+}
+
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+  background: rgb(0 0 0 / 58%);
+}
+
+.offer-dialog {
+  width: min(460px, 100%);
+  padding: 30px;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgb(0 0 0 / 30%);
+}
+
+.offer-dialog h2 {
+  margin-top: 0;
+}
+
+.offer-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.decline-button {
+  color: #333333;
+  background: #e4e7eb;
+}
+
+.decline-button:hover {
+  background: #d5d9de;
+}
+
+@media (max-width: 720px) {
+  .timer-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>정기구독 다크패턴 테스트</title>
+
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+  </head>
+
+  <body>
+    <header class="page-header">
+      <h1>정기구독 서비스</h1>
+      <p>
+        Chrome 확장 프로그램의 다크패턴 탐지 기능을 확인하기 위한 자체 테스트
+        페이지입니다.
+      </p>
+    </header>
+
+    <main class="container">
+      <section class="test-card">
+        <h2>구독 상품</h2>
+
+        <p class="price">프리미엄 멤버십 월 9,900원</p>
+
+        <p>매월 자동 결제되는 정기구독 상품입니다.</p>
+
+        <button type="button">지금 구독하기</button>
+      </section>
+
+      <section class="test-card">
+        <h2>1. 사전 선택 항목 탐지</h2>
+
+        <p>아래 선택 항목은 페이지가 처음 열릴 때부터 체크되어 있습니다.</p>
+
+        <label class="checkbox-row">
+          <input id="marketing-agreement" type="checkbox" checked />
+          <span>[선택] 마케팅 정보 및 이벤트 혜택 수신 동의</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input id="insurance-option" type="checkbox" checked />
+          <span>[선택] 프리미엄 보험 부가서비스 신청</span>
+        </label>
+
+        <label class="checkbox-row">
+          <input id="required-agreement" type="checkbox" checked required />
+          <span>[필수] 서비스 이용약관 동의</span>
+        </label>
+      </section>
+
+      <section class="test-card">
+        <h2>2. 타이머 탐지</h2>
+
+        <div class="timer-grid">
+          <article class="timer-box timer-box--normal">
+            <h3>정상 타이머</h3>
+            <p>구독 할인 남은 시간</p>
+            <strong id="normal-timer">00:05:00</strong>
+            <small>매초 정상적으로 감소합니다.</small>
+          </article>
+
+          <article class="timer-box timer-box--static">
+            <h3>정지 타이머</h3>
+            <p>특가 할인 남은 시간</p>
+            <strong id="static-timer">00:10:00</strong>
+            <small>시간이 감소하지 않습니다.</small>
+          </article>
+
+          <article class="timer-box timer-box--reset">
+            <h3>초기화 타이머</h3>
+            <p>한정 할인 종료까지</p>
+            <strong id="reset-timer">00:15:00</strong>
+            <small>새로고침하면 다시 15분으로 돌아갑니다.</small>
+          </article>
+        </div>
+      </section>
+
+      <section class="test-card">
+        <h2>3. 반복 간섭 탐지</h2>
+
+        <p>
+          확장 프로그램에서 구독 목표 추적을 시작한 뒤 아래 버튼을 눌러 주세요.
+        </p>
+
+        <button
+          id="start-interference-test"
+          class="primary-button"
+          type="button"
+        >
+          반복 간섭 테스트 시작
+        </button>
+
+        <p class="guide">
+          나타난 팝업에서 ‘아니요’를 누르면 잠시 후 같은 팝업이 다시 나타납니다.
+        </p>
+      </section>
+
+      <section class="test-card">
+        <h2>4. 목표 이동 기능</h2>
+
+        <p>가입, 구독 및 해지 목표에 해당하는 위치를 찾는 기능을 확인합니다.</p>
+
+        <nav class="goal-buttons" aria-label="사용자 목표">
+          <a href="#signup-section"> 회원가입 </a>
+
+          <a href="#subscribe-section"> 구독 신청 </a>
+
+          <a href="#cancel-section"> 구독 해지 </a>
+        </nav>
+      </section>
+
+      <section id="signup-section" class="test-card goal-section">
+        <h2>회원가입</h2>
+        <p>새로운 계정을 생성할 수 있습니다.</p>
+
+        <button type="button">계정 만들기</button>
+      </section>
+
+      <section id="subscribe-section" class="test-card goal-section">
+        <h2>구독 신청</h2>
+        <p>월 정기구독 상품을 신청합니다.</p>
+
+        <button type="button">구독 신청</button>
+      </section>
+
+      <section id="cancel-section" class="test-card goal-section">
+        <h2>구독 관리</h2>
+        <p>현재 이용 중인 정기구독을 관리합니다.</p>
+
+        <button type="button" class="danger-button">구독 해지</button>
+      </section>
+    </main>
+
+    <div id="popup-root"></div>
+  </body>
+</html>
